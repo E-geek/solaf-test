@@ -1,0 +1,16 @@
+{
+  "name": "louter_ezhov/solaf-test",
+  "description": "description",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "louter_ezhov",
+      "email": "kasytr@gmail.com"
+    }
+  ],
+  "require": {
+    "doctrine/orm": "2.14.*",
+    "phpunit/phpunit": "9.6.*"
+  }
+}
