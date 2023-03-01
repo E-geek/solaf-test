@@ -11,6 +11,9 @@
   ],
   "require": {
     "doctrine/orm": "2.14.*",
-    "phpunit/phpunit": "9.6.*"
+    "doctrine/dbal": "3.6.0",
+    "phpunit/phpunit": "9.6.*",
+    "paquettg/php-html-parser": "3.1.*",
+    "irap/autoloader": "2.0.*",
   }
 }
