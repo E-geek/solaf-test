@@ -14,11 +14,11 @@ $config = ORMSetup::createAnnotationMetadataConfiguration(
 
 $dbParams = array(
     'driver' => 'pdo_pgsql',
-    'user' => 'solaf',
-    'password' => 'solaf',
-    'host' => '192.168.1.20',
-    'port' => 5432,
-    'dbname' => 'solaf',
+    'user' => $_ENV['PG_USER'] ?? 'solaf',
+    'password' => $_ENV['PG_PASSWORD'] ?? 'solaf',
+    'host' => $_ENV['PG_HOST'] ?? '192.168.1.20',
+    'port' => $_ENV['PG_PORT'] ?? 5432,
+    'dbname' => $_ENV['PG_DB'] ?? 'solaf',
     'charset' => 'UTF-8',
 );
 

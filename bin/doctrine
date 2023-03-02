@@ -8,6 +8,10 @@ use Doctrine\ORM\Tools\Console\EntityManagerProvider\SingleManagerProvider;
 // Adjust this path to your actual bootstrap.php
 require __DIR__ . '/../src/db.php';
 
+// Yes, this is weak solution, but I don't know why when immediately run then DB not ready yet
+echo "Await for PG really UP" . PHP_EOL;
+sleep(2);
+
 ConsoleRunner::run(
     new SingleManagerProvider(DB\Tool::getInstance())
 );
