@@ -1,9 +1,10 @@
 <?php
-require_once __DIR__ . "/vendor/autoload.php";
+require_once __DIR__ . "/../vendor/autoload.php";
 require_once __DIR__ . '/db.php';
-require './config.php';
+require __DIR__ . '/config.php';
 
 use \PHPHtmlParser\Dom\Node\HtmlNode;
+use \DB\Tool as DB;
 
 function getNodeText(HtmlNode $node, string $selector): ?string {
     $result = $node->find($selector)[0];
@@ -124,7 +125,7 @@ function process() {
     echo "Found ${count} card of the car. Complete." . PHP_EOL;
     echo "Structuring and store" . PHP_EOL;
 
-    $carRepo = DB\Tool::getInstance()->getRepository('Car');
+    $carRepo = DB::getInstance()->getRepository('Car');
 
     /** @var HtmlNode $carCard */
     foreach ($carCards as $key => $carCard) {
@@ -141,12 +142,12 @@ function process() {
             continue;
         }
         $car = new Car($carDTO);
-        DB\Tool::getInstance()->persist($car);
-        DB\Tool::getInstance()->flush();
+        DB::getInstance()->persist($car);
+        DB::getInstance()->flush();
     }
     unset($carCards);
     echo "Done." . PHP_EOL;
-    DB\Tool::getInstance()->getConnection()->close();
+    DB::getInstance()->getConnection()->close();
 }
 
 process();

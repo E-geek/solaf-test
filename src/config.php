@@ -3,7 +3,7 @@
 use PHPHtmlParser\Dom\Node\HtmlNode;
 
 $targetUrl = 'https://ecarstrade.com/auctions/stock/page1?sort=mark_model.asc';
-$targetUrl = 'http://192.168.1.20:3000/index-min.html';
+$targetUrl = 'http://192.168.1.20:8080/index-min.html';
 
 $scheme = [
     'title' => '.item-title > a > span',

@@ -6,7 +6,7 @@ use Doctrine\ORM\Tools\Console\ConsoleRunner;
 use Doctrine\ORM\Tools\Console\EntityManagerProvider\SingleManagerProvider;
 
 // Adjust this path to your actual bootstrap.php
-require __DIR__ . '/../db.php';
+require __DIR__ . '/../src/db.php';
 
 ConsoleRunner::run(
     new SingleManagerProvider(DB\Tool::getInstance())
