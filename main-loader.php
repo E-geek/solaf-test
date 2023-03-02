@@ -8,7 +8,9 @@ use \PHPHtmlParser\Dom\Node\HtmlNode;
 function getNodeText(HtmlNode $node, string $selector): ?string {
     $result = $node->find($selector)[0];
     if ($result) {
-        return trim($result->text);
+        $text = trim($result->text);
+        unset($result);
+        return $text;
     }
     return null;
 };
@@ -56,6 +58,7 @@ function parseCardByScheme(HtmlNode $carCard, $scheme): ?array {
         if ($processor) {
             $node = $carCard->find($selector)[0];
             $result[$propName] = $processor($node);
+            unset($node);
         } elseif ($regexp) {
             if (!preg_match($regexp, $nodeValue, $matches)) {
                 echo "Cannot parse $selector node for $propName prop can't match $option" . PHP_EOL;
@@ -103,6 +106,7 @@ function process() {
             exit(2);
         }
         $count = +$counterNode[0]->text;
+        unset($counterNode);
         if ($count > 400) {
             echo "Not implemented yet load more than 400 items" . PHP_EOL;
             exit(4);
@@ -140,6 +144,7 @@ function process() {
         DB\Tool::getInstance()->persist($car);
         DB\Tool::getInstance()->flush();
     }
+    unset($carCards);
     echo "Done." . PHP_EOL;
     DB\Tool::getInstance()->getConnection()->close();
 }
