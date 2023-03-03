@@ -1,13 +1,12 @@
 #!/usr/bin/env php
 <?php
-// bin/doctrine
+
+require __DIR__ . '/../src/connector/db.php';
 
 use Doctrine\ORM\Tools\Console\ConsoleRunner;
 use Doctrine\ORM\Tools\Console\EntityManagerProvider\SingleManagerProvider;
-
-// Adjust this path to your actual bootstrap.php
-require __DIR__ . '/../src/connector/db.php';
+use Connector\EntityManager;
 
 ConsoleRunner::run(
-    new SingleManagerProvider(Connector\EntityManager::getInstance())
+    new SingleManagerProvider(EntityManager::get())
 );

@@ -17,7 +17,8 @@ RUN docker-php-ext-install pdo pdo_pgsql sockets
 # hack for prevent rebuild all image: move down dynamic content included intu image
 COPY ./composer.json ./
 RUN composer install
+ENV PATH="/app/bin:${PATH}"
 CMD ["doctrine", "orm:schema-tool:update", "--force"]
 
 FROM base as image-loader
-CMD ["/usr/local/bin/php", "src/image-loader-observer.php"]
+CMD ["image-loader-observer"]
