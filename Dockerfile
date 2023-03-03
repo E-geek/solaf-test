@@ -16,6 +16,8 @@ RUN docker-php-ext-install pdo pdo_pgsql sockets
 
 # hack for prevent rebuild all image: move down dynamic content included intu image
 COPY ./composer.json ./
+COPY ./src ./src/
+COPY ./bin ./bin/
 RUN composer install
 ENV PATH="/app/bin:${PATH}"
 CMD ["doctrine", "orm:schema-tool:update", "--force"]

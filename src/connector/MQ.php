@@ -3,7 +3,6 @@
 namespace Connector;
 
 require_once __DIR__ . "/../../vendor/autoload.php";
-require_once __DIR__ . "/../tool/Singleton.php";
 
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Message\AMQPMessage;

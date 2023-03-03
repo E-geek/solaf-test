@@ -3,10 +3,9 @@
 namespace Lib;
 
 require_once __DIR__ . "/../../vendor/autoload.php";
-require_once __DIR__ . "/Loader.php";
 
-use \PHPHtmlParser\Dom\Node\HtmlNode;
-use \PHPHtmlParser\Dom;
+use PHPHtmlParser\Dom\Node\HtmlNode;
+use PHPHtmlParser\Dom;
 use PHPHtmlParser\Exceptions\ChildNotFoundException;
 use PHPHtmlParser\Exceptions\CircularException;
 use PHPHtmlParser\Exceptions\ContentLengthException;
@@ -30,6 +29,10 @@ class CardGetter {
         $this->targetUrl = $targetUrl;
         $this->scheme = $scheme;
         $this->loader = new Loader();
+    }
+
+    public function setLoader($loader) {
+        $this->loader = $loader;
     }
 
     private function _loadDocument($url) :bool {

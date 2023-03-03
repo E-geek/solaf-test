@@ -1,5 +1,7 @@
 <?php
 
+namespace Entity;
+
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -55,7 +57,7 @@ class Car {
 
     public function __get($name) {
         if (property_exists($this, $name)) {
-            return $this[ $name ];
+            return $this->$name;
         } elseif (array_key_exists($name, $this->extra)) {
             return $this->extra[ $name ];
         }

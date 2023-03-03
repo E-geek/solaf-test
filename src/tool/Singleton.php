@@ -17,7 +17,7 @@ abstract class Singleton {
         return self::$instances[ $cls ];
     }
 
-    public static function isInit() :bool {
+    public static function isConstructed() :bool {
         $cls = static::class;
         return isset(self::$instances[ $cls ]);
     }

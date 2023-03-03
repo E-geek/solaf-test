@@ -3,7 +3,6 @@
 namespace Connector;
 
 require_once __DIR__ . "/../../vendor/autoload.php";
-require_once __DIR__ . "/../tool/Singleton.php";
 
 use Doctrine\DBAL\DriverManager;
 use Doctrine\ORM;
@@ -42,7 +41,7 @@ class EntityManager extends Singleton {
     }
 
     public static function close() {
-        if (!self::isInit() || !self::getInstance()->entityManager->isOpen()) {
+        if (!self::isConstructed() || !self::getInstance()->entityManager->isOpen()) {
             return;
         }
         self::getInstance()->entityManager->close();

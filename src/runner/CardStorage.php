@@ -2,15 +2,12 @@
 
 namespace Runner;
 
-use Car;
+require_once __DIR__ . "/../../vendor/autoload.php";
+
+use Entity\Car;
 use Connector\EntityManager;
 use Connector\MQ;
 use Lib\CardGetter;
-
-require_once __DIR__ . "/../../vendor/autoload.php";
-require_once __DIR__ . '/../connector/db.php';
-require_once __DIR__ . '/../connector/mq.php';
-require_once __DIR__ . '/../lib/CardGetter.php';
 
 class CardStorage {
     private CardGetter $cardGetter;
@@ -66,7 +63,7 @@ class CardStorage {
             EntityManager::get()->persist($car);
         }
         EntityManager::get()->flush();
-        EntityManager::get()->close();
+        EntityManager::close();
         return true;
     }
 }

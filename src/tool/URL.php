@@ -15,6 +15,6 @@ class URL {
             return $root . $link;
         }
         $path = explode('/', $parsedUrl[ 'path' ]);
-        return $root . '/' . join('/', array_slice($path, 0, -1)) . '/' . $link;
+        return $root . join('/', array_slice($path, 0, -1)) . '/' . $link;
     }
 }

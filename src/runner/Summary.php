@@ -3,7 +3,6 @@
 namespace Runner;
 
 require_once __DIR__ . "/../../vendor/autoload.php";
-require_once __DIR__ . '/../connector/db.php';
 
 use Doctrine\ORM\EntityManagerInterface;
 use Connector\EntityManager;

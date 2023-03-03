@@ -9,7 +9,7 @@ class Loader {
     /**
      * @throws FetchException
      */
-    public static function fetch(string $url, $retries = 3) {
+    public function fetch(string $url, $retries = 3) {
         $ch = curl_init();
         curl_setopt_array($ch, [
             CURLOPT_URL => $url,
@@ -29,7 +29,7 @@ class Loader {
         if ($error) {
             curl_close($ch);
             if ($retries > 0) {
-                return self::fetch($url, $retries - 1);
+                return $this->fetch($url, $retries - 1);
             } else {
                 throw new FetchException('Cannot download ' . $url . ':' . PHP_EOL . $error);
             }

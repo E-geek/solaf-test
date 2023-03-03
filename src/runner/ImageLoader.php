@@ -3,7 +3,6 @@
 namespace Runner;
 
 require_once __DIR__ . '/../../vendor/autoload.php';
-require_once __DIR__ . '/../connector/mq.php';
 
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Message\AMQPMessage;
