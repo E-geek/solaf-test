@@ -18,3 +18,6 @@ RUN docker-php-ext-install pdo pdo_pgsql sockets
 COPY ./composer.json ./
 RUN composer install
 CMD ["/usr/local/bin/php", "bin/doctrine", "orm:schema-tool:update", "--force"]
+
+FROM base as image-loader
+CMD ["/usr/local/bin/php", "src/image-loader-observer.php"]

@@ -1,14 +1,15 @@
-version: '3.5'
+version: '3.8'
 
 services:
   cli:
-    build: .
+    build:
+      context: .
+      target: base
     networks:
       - postgres
     volumes:
       - ./src/:/app/src
       - ./bin/:/app/bin
-      - ./storage/:/app/storage
     environment:
       PG_HOST: postgres
       PG_PORT: 5432
@@ -18,10 +19,32 @@ services:
       MQ_HOST: rabbit
       MQ_USER: ${MQ_USER:-solaf}
       MQ_PASS: ${MQ_PASS:-solaf}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbit:
+        condition: service_healthy
+      image-loader:
+        condition: service_started
+
+  image-loader:
+    build:
+      context: .
+      target: image-loader
+    networks:
+      - postgres
+    volumes:
+      - ./src/:/app/src
+      - ./bin/:/app/bin
+      - ./storage/:/app/storage
+    environment:
+      MQ_HOST: rabbit
+      MQ_USER: ${MQ_USER:-solaf}
+      MQ_PASS: ${MQ_PASS:-solaf}
       APP_STORAGE: "/app/storage"
     depends_on:
-      - postgres
-      - rabbit
+      rabbit:
+        condition: service_healthy
 
   postgres:
     hostname: postgres
@@ -39,6 +62,12 @@ services:
     networks:
       - postgres
     restart: unless-stopped
+    healthcheck:
+      test: pg_isready
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 2s
 
   pgadmin:
     container_name: pgadmin_container
@@ -72,6 +101,12 @@ services:
       - "5672:5672"
       - "15672:15672"
     restart: unless-stopped
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 2s
+      timeout: 10s
+      retries: 3
+      start_period: 3s
 
 networks:
   postgres:
