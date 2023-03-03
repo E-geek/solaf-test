@@ -19,7 +19,7 @@ class CardStorage {
 
     public function __construct(string $targetUrl, array $scheme) {
         $this->cardGetter = new CardGetter($targetUrl, $scheme);
-        $this->carRepo = EntityManager::get()->getRepository('Car');
+        $this->carRepo = EntityManager::get()->getRepository('Entity\Car');
     }
 
     private static function _setupDownloadToStorageTask(string $link) {
