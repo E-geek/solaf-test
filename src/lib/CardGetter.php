@@ -75,7 +75,8 @@ class CardGetter {
             echo "Unexpected behavior. First page is not a last and return less than 100 cards " . PHP_EOL;
         }
         $pages = ceil($countCards / 100);
-        for ($page = 1; $page <= $pages; $page++) {
+        for ($page = 2; $page <= $pages; $page++) {
+            echo "Processing ${page} page..." . PHP_EOL;
             $url = str_replace('[X]', $page, $this->targetUrl);
             $success = $this->_loadDocument($url);
             if (!$success) {
@@ -83,11 +84,13 @@ class CardGetter {
             }
             $carCards = $this->dom->find('.car-item');
             $this->carCards = array_merge($this->carCards, $carCards->toArray());
+            echo "Done" . PHP_EOL;
         }
         return true;
     }
 
     private function _firstDownload() :bool {
+        echo "Processing 1 page..." . PHP_EOL;
         $url = str_replace('[X]', '1', $this->targetUrl);
         $success = $this->_loadDocument($url);
         if (!$success) {
@@ -99,6 +102,7 @@ class CardGetter {
         }
         $carCards = $this->dom->find('.car-item');
         $this->carCards = $carCards->toArray();
+        echo "Done" . PHP_EOL;
         $countCardsOnPage = $carCards->count();
         if ($countCardsOnPage < $countCards) {
             $loaded = $this->_loadAllNextPages($countCards, $countCardsOnPage);
@@ -131,8 +135,8 @@ class CardGetter {
         return $result;
     }
 
-    private static function getNodeText(HtmlNode $node, string $selector): ?string {
-        $result = $node->find($selector)[0];
+    private static function getNodeText(HtmlNode $node, string $selector) :?string {
+        $result = $node->find($selector)[ 0 ];
         if ($result) {
             $text = trim($result->text);
             unset($result);
@@ -141,7 +145,7 @@ class CardGetter {
         return null;
     }
 
-    public static function parseCardByScheme(HtmlNode $carCard, $scheme): ?array {
+    public static function parseCardByScheme(HtmlNode $carCard, $scheme) :?array {
         $result = [];
         foreach ($scheme as $propName => $description) {
             $required = true;
@@ -162,22 +166,22 @@ class CardGetter {
                     echo "Not found $selector node for $propName prop" . PHP_EOL;
                     return null;
                 } else {
-                    $result[$propName] = $default ?? null;
+                    $result[ $propName ] = $default ?? null;
                     continue;
                 }
             }
             if ($processor) {
-                $node = $carCard->find($selector)[0];
-                $result[$propName] = $processor($node);
+                $node = $carCard->find($selector)[ 0 ];
+                $result[ $propName ] = $processor($node);
                 unset($node);
             } elseif ($regexp) {
                 if (!preg_match($regexp, $nodeValue, $matches)) {
                     echo "Cannot parse $selector node for $propName prop can't match $option" . PHP_EOL;
                     return null;
                 };
-                $result[$propName] = $matches[1];
+                $result[ $propName ] = $matches[ 1 ];
             } else {
-                $result[$propName] = $nodeValue;
+                $result[ $propName ] = $nodeValue;
             }
         }
         return $result;

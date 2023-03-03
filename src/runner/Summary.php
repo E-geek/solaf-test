@@ -35,9 +35,9 @@ class Summary {
         EOF;
         $data = $this->_getSqlResult($query);
         return [
-            $data[0]['average_mileage'],
-            $data[0]['max_power'],
-            $data[0]['min_power'],
+            $data[ 0 ][ 'average_mileage' ],
+            $data[ 0 ][ 'max_power' ],
+            $data[ 0 ][ 'min_power' ],
         ];
     }
 
@@ -50,7 +50,7 @@ class Summary {
             GROUP BY ?
             ORDER BY "cnt" DESC
         EOF;
-        $params = ['"'.$field.'"', '"'.$field.'"'];
+        $params = ['"' . $field . '"', '"' . $field . '"'];
         if ($limit > 0) {
             $query .= ' LIMIT ?';
             $params[] = $limit;
@@ -58,7 +58,7 @@ class Summary {
         $data = $this->_getSqlResult($query, $params);
         $list = [];
         foreach ($data as $row) {
-            $list[] = $row[$field];
+            $list[] = $row[ $field ];
         }
         return implode(', ', $list);
     }

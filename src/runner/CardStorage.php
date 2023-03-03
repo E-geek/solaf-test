@@ -30,7 +30,7 @@ class CardStorage {
             return;
         }
         $url = parse_url($link);
-        $folders = explode('/', $url['path']);
+        $folders = explode('/', $url[ 'path' ]);
         $filename = implode('/', array_slice($folders, -4));
         MQ::getInstance()->publish('image-link', [
             'type' => 'link',
@@ -46,19 +46,19 @@ class CardStorage {
             return false;
         }
         foreach ($carCards as $key => $carDTO) {
-            if (!$carDTO['existsId']) {
+            if (!$carDTO[ 'existsId' ]) {
                 echo "Skip $key card because existsId not defined" . PHP_EOL;
                 continue;
             }
             $exists = $this->carRepo->count([
-                'existsId' => $carDTO['existsId'],
+                'existsId' => $carDTO[ 'existsId' ],
             ]);
             if ($exists !== 0) {
-                echo "Skip " . $carDTO['existsId'] . PHP_EOL;
+                echo "Skip " . $carDTO[ 'existsId' ] . PHP_EOL;
                 continue;
             }
-            if ($carDTO !== null && is_array($carDTO['preview'])) {
-                foreach ($carDTO['preview'] as $link) {
+            if ($carDTO !== null && is_array($carDTO[ 'preview' ])) {
+                foreach ($carDTO[ 'preview' ] as $link) {
                     self::_setupDownloadToStorageTask($link);
                 }
             }

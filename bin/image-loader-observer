@@ -1,0 +1,10 @@
+#!/usr/bin/env php
+<?php
+
+require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../src/runner/ImageLoaderObserver.php';
+
+use Runner\ImageLoaderObserver;
+
+$imageLoader = new ImageLoaderObserver();
+$imageLoader->watch(__DIR__ . '/image-loader');

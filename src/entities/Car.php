@@ -16,31 +16,31 @@ class Car {
      */
     protected $id;
 
-    /** @ORM\Column(type="string") **/
+    /** @ORM\Column(type="string") * */
     protected $existsId;
 
-    /** @ORM\Column(type="string",nullable=true) **/
+    /** @ORM\Column(type="string",nullable=true) * */
     protected $title;
 
-    /** @ORM\Column(type="string",nullable=true) **/
+    /** @ORM\Column(type="string",nullable=true) * */
     protected $mileage;
 
-    /** @ORM\Column(type="string",nullable=true) **/
+    /** @ORM\Column(type="string",nullable=true) * */
     protected $gearbox;
 
-    /** @ORM\Column(type="string",nullable=true) **/
+    /** @ORM\Column(type="string",nullable=true) * */
     protected $fuel;
 
-    /** @ORM\Column(type="string",nullable=true) **/
+    /** @ORM\Column(type="string",nullable=true) * */
     protected $power;
 
-    /** @ORM\Column(type="string",nullable=true) **/
+    /** @ORM\Column(type="string",nullable=true) * */
     protected $origin;
 
-    /** @ORM\Column(type="json",nullable=true,options={"jsonb"=true}) **/
+    /** @ORM\Column(type="json",nullable=true,options={"jsonb"=true}) * */
     protected $extra;
 
-    /** @ORM\Column(type="datetimetz",nullable=true) **/
+    /** @ORM\Column(type="datetimetz",nullable=true) * */
     protected $registered;
 
     public function __construct(array $properties = null) {
@@ -55,9 +55,9 @@ class Car {
 
     public function __get($name) {
         if (property_exists($this, $name)) {
-            return $this[$name];
+            return $this[ $name ];
         } elseif (array_key_exists($name, $this->extra)) {
-            return $this->extra[$name];
+            return $this->extra[ $name ];
         }
         return null;
     }
@@ -66,7 +66,7 @@ class Car {
         if (property_exists($this, $name)) {
             return $this->$name = $value;
         } else {
-            return $this->extra[$name] = $value;
+            return $this->extra[ $name ] = $value;
         }
     }
 }
