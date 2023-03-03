@@ -6,12 +6,13 @@
 ```shell
 docker compose build
 ```
+протестировано на версии докера v20.10.22 и compose v2.16.0
 
 ## Развёртывание
 
 Любыми средствами, например через консоль:
 ```shell
-docker compose up
+docker compose up -d
 ```
 
 ## Результат

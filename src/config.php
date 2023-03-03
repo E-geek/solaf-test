@@ -7,7 +7,6 @@ use Tool\URL;
 
 class Config {
     public static string $targetUrl = 'https://ecarstrade.com/auctions/stock/page[X]?sort=mark_model.asc';
-//    public static string $targetUrl = 'http://192.168.1.20:8080/index-min.html';
 
     public static function getScheme() {
         return [

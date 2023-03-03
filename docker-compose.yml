@@ -26,6 +26,7 @@ services:
         condition: service_healthy
       image-loader:
         condition: service_started
+    restart: on-failure
 
   image-loader:
     build:
