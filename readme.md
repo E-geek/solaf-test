@@ -25,6 +25,9 @@ docker compose up -d
 docker compose run cli cars download
 ```
 
+Картинки складываются в папку `storage` в корне проекта
+Данные в БД `solaf` в таблицу `car`
+
 для получения значений вычисления:
 ```shell
 docker compose run cli cars summary
@@ -61,4 +64,4 @@ http://127.0.0.1:5050/browser/
 
 Проблемы с первым запуском из-за прав?
 В корне проекта создаётся папака `.data` и в ней 2 директории: 
-`pgadmin`, `postgres` и `rabbitmq`. У всех следует назначить права ugo+rwx.
+`postgres` и `rabbitmq`. У всех следует назначить права ugo+rwx.
