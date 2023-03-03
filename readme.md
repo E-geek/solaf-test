@@ -25,6 +25,9 @@ docker compose up -d
 docker compose run cli cars download
 ```
 
+Картинки складываются в папку `storage` в корне проекта
+Данные в БД `solaf` в таблицу `car`
+
 для получения значений вычисления:
 ```shell
 docker compose run cli cars summary
