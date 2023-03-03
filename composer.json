@@ -15,8 +15,10 @@
     "phpunit/phpunit": "9.6.*",
     "paquettg/php-html-parser": "3.1.*",
     "symfony/cache": "5.4.*",
-    "doctrine/annotations": "^2.0",
-    "ext-curl": "*"
+    "doctrine/annotations": "2.0.*",
+    "ext-curl": "*",
+    "php-amqplib/php-amqplib": "2.11.*",
+    "react/child-process": "0.6.*"
   },
   "autoload": {
     "psr-0": {

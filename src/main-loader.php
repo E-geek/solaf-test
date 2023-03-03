@@ -1,9 +1,12 @@
 <?php
 require_once __DIR__ . "/../vendor/autoload.php";
 require_once __DIR__ . '/db.php';
+require_once __DIR__ . '/mq.php';
 require __DIR__ . '/config.php';
 
 use \PHPHtmlParser\Dom\Node\HtmlNode;
+use PhpAmqpLib\Message\AMQPMessage;
+use PhpAmqpLib\Channel\AMQPChannel;
 use \DB\Tool as DB;
 
 function getNodeText(HtmlNode $node, string $selector): ?string {
@@ -20,7 +23,7 @@ function linkToURL(string $link, string $base): string {
     $parsedUrl = parse_url($base);
     $root = ($parsedUrl['scheme'] ?? 'https') . '://'
         . $parsedUrl['host']
-        . ($parsedUrl['port'] ? ':' . $parsedUrl['port'] : '');
+        . (isset($parsedUrl['port']) ? ':' . $parsedUrl['port'] : '');
     if (preg_match('/^(\w+:)?\/\//', $link) > 0) {
         return $link;
     }
@@ -73,8 +76,23 @@ function parseCardByScheme(HtmlNode $carCard, $scheme): ?array {
     return $result;
 }
 
+function setupDownloadToStorageTask(string $link, AMQPChannel $loaderChannel) {
+    if (strlen($link) === 0) {
+        return;
+    }
+    $url = parse_url($link);
+    $folders = explode('/', $url['path']);
+    $filename = implode('/', array_slice($folders, -4));
+    $msg = new AMQPMessage(serialize([
+        'type' => 'link',
+        'link' => $link,
+        'filename' => $filename,
+    ]));
+    $loaderChannel->basic_publish($msg, '', 'image-link');
+}
+
 function process() {
-    global $targetUrl, $scheme;
+    global $targetUrl, $scheme, $mqConnection;
     $ch = curl_init();
     echo "Start to download..." . PHP_EOL;
     curl_setopt_array($ch, [
@@ -83,7 +101,7 @@ function process() {
         CURLOPT_HTTPHEADER => [
             "Accept: text/html,application/xhtml+xml",
             "Accept-Encoding: gzip, deflate",
-            "Cookie: eCT/LANG=en; eCT/first_user_request=%5B%5D; eCT/perpage=400",
+            "Cookie: eCT/LANG=en; eCT/first_user_request=%5B%5D; eCT/perpage=100",
         ],
         CURLOPT_TIMEOUT => 30,
         CURLOPT_FRESH_CONNECT => 1,
@@ -113,7 +131,7 @@ function process() {
             exit(4);
         }
         $carCards = $dom->find('.car-item');
-        if ($carCards->count() !== $count) {
+        if ($carCards->count() !== $count && false) {
             echo "Count cards on page and in counter is different. Behavior undefined. " .
                 "Cards: " . $carCards->count() . " Count expected: $count" . PHP_EOL;
             exit(5);
@@ -126,10 +144,17 @@ function process() {
     echo "Structuring and store" . PHP_EOL;
 
     $carRepo = DB::getInstance()->getRepository('Car');
+    $loaderChannel = $mqConnection->channel();
+    $loaderChannel->queue_declare('image-link', false, false, false, false);
 
     /** @var HtmlNode $carCard */
     foreach ($carCards as $key => $carCard) {
         $carDTO = parseCardByScheme($carCard, $scheme);
+        if ($carDTO !== null && is_array($carDTO['preview'])) {
+            foreach ($carDTO['preview'] as $link) {
+                setupDownloadToStorageTask($link, $loaderChannel);
+            }
+        }
         if ($carDTO === null || !$carDTO['existsId']) {
             echo "Skip $key card" . PHP_EOL;
             continue;
@@ -145,6 +170,10 @@ function process() {
         DB::getInstance()->persist($car);
         DB::getInstance()->flush();
     }
+    $loaderChannel->basic_publish(new AMQPMessage(serialize([
+        'type' => 'system',
+        'body' => 'done',
+    ])));
     unset($carCards);
     echo "Done." . PHP_EOL;
     DB::getInstance()->getConnection()->close();

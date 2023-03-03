@@ -8,12 +8,17 @@ services:
     volumes:
       - ./src/:/app/src
       - ./bin/:/app/bin
+      - ./storage/:/app/storage
     environment:
       PG_HOST: postgres
       PG_PORT: 5432
       PG_DB: ${PG_DB:-solaf}
-      PG_USER: ${PG_USER:-solaf}
-      PG_PASSWORD: ${PG_PASSWORD:-solaf}
+      PG_USER: ${PG_USER:-solaf} # yes, publishing creds (even dev's) bad practice,
+      PG_PASS: ${PG_PASS:-solaf} # but without k8s start CMD line will be so long
+      MQ_HOST: rabbit
+      MQ_USER: ${MQ_USER:-solaf}
+      MQ_PASS: ${MQ_PASS:-solaf}
+      APP_STORAGE: "/app/storage"
     depends_on:
       - postgres
       - rabbit
@@ -57,8 +62,8 @@ services:
     hostname: rabbit
     image: rabbitmq:3-management
     environment:
-      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-solaf}
-      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-solaf}
+      RABBITMQ_DEFAULT_USER: ${MQ_USER:-solaf}
+      RABBITMQ_DEFAULT_PASS: ${MQ_PASS:-solaf}
     volumes:
       - ./.data/rabbitmq/:/var/lib/rabbitmq
     networks:
