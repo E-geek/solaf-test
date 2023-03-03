@@ -1,19 +1,16 @@
 <?php
 require_once __DIR__ . '/../vendor/autoload.php';
-require_once __DIR__ . '/mq.php';
+require_once __DIR__ . '/connector/mq.php';
 
 use PhpAmqpLib\Message\AMQPMessage;
 use React\EventLoop\Loop;
 use React\ChildProcess\Process;
+use Connector\MQ;
 
 function observe() {
-    global $mqConnection;
-    $externalChannel = $mqConnection->channel();
-    $internalChannel = $mqConnection->channel();
+    $externalChannel = MQ::getInstance()->getChannelByQueue('image-link');
+    $internalChannel = MQ::getInstance()->getChannelByQueue('s-image-loader');
     echo "Connect to RabbitMQ" . PHP_EOL;
-    $externalChannel->queue_declare('image-link', false, false, false, false);
-    $internalChannel->queue_declare('s-image-loader', false, false, false, false);
-    $externalChannel->basic_qos(null, 1, null);
     $loop = Loop::get();
 
     $onMessage = function(AMQPMessage $msg) use ($internalChannel) {
@@ -22,24 +19,22 @@ function observe() {
         if ($body['type'] === 'system' && $body['body'] === 'done') {
             onEnd($internalChannel);
         }
-        $task = new AMQPMessage(serialize([
+        MQ::getInstance()->publish('s-image-loader', [
             'type' => 'download',
             'body' => [
                 'link' => $body['link'],
                 'filename' => $body['filename'],
             ],
-        ]));
-        $internalChannel->basic_publish($task, '', 's-image-loader');
+        ]);
     };
 
     $externalChannel->basic_consume('image-link', '', false, true, false, false, $onMessage);
 
     function onEnd($internalChannel) {
         echo 'Aggregator sent "done"';
-        $task = new AMQPMessage([
+        MQ::getInstance()->publish('s-image-loader', [
             'type' => 'shutdown',
         ]);
-        $internalChannel->basic_publish($task, '', 's-image-loader');
     }
 
     echo "Run workers" . PHP_EOL;

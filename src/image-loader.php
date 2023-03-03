@@ -1,18 +1,15 @@
 <?php
 require_once __DIR__ . '/../vendor/autoload.php';
-require_once __DIR__ . '/mq.php';
+require_once __DIR__ . '/connector/mq.php';
 
 use PhpAmqpLib\Message\AMQPMessage;
+use Connector\MQ;
 
 function loader() {
-    global $mqConnection;
-
     $storage = $_ENV['APP_STORAGE'] ?? __DIR__ . '/../storage';
 
     echo "Start slave" . PHP_EOL;
-    $channel = $mqConnection->channel();
-
-    $channel->queue_declare('s-image-loader', false, false, false, false);
+    $channel = MQ::getInstance()->getChannelByQueue('s-image-loader');
 
     $onMessage = function(AMQPMessage $msg) use ($storage) {
         $message = unserialize($msg->body);
@@ -51,7 +48,6 @@ function loader() {
     };
 
     $channel->basic_consume('s-image-loader', '', false, true, false, false, $onMessage);
-    $channel->basic_qos(null, 1, null);
 
     echo "Awaiting..." . PHP_EOL;
     while ($channel->is_open()) {

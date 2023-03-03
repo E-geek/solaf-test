@@ -1,0 +1,66 @@
+#!/usr/bin/env php
+<?php
+require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../src/config.php';
+require __DIR__ . '/../src/runner/CardStorage.php';
+require __DIR__ . '/../src/runner/Summary.php';
+
+use splitbrain\phpcli\CLI;
+use splitbrain\phpcli\Options;
+
+class Minimal extends CLI
+{
+    private string $targetUrl;
+
+    private array $scheme;
+
+    protected function setup(Options $options)
+    {
+        $options->registerCommand('download', 'Download and store info and images');
+        $options->registerCommand('summary', 'Print summary data');
+        $options->setHelp('For start should type `cars download`, 
+            for print summary of the data type `cars summary`');
+        $options->registerOption('version', 'Print version', 'v');
+    }
+
+    // implement your code
+    protected function main(Options $options)
+    {
+        $cmd = $options->getCmd();
+        if ($cmd) {
+            switch ($cmd) {
+                case 'download':
+                    $this->_download();
+                    break;
+                case 'summary':
+                    $this->_summary();
+                    break;
+                default:
+                    echo 'Commend not found: ' . $cmd;
+            }
+        } elseif ($options->getOpt('version')) {
+            $this->info('1.0.0');
+        } else {
+            echo $options->help();
+        }
+    }
+
+    public function setupEnvironments(string $targetUrl, array $scheme) {
+        $this->targetUrl = $targetUrl;
+        $this->scheme = $scheme;
+    }
+
+    private function _download() {
+        $cardStore = new Runner\CardStorage($this->targetUrl, $this->scheme);
+        $cardStore->loadAndSave();
+    }
+
+    private function _summary() {
+        $summary = new Runner\Summary();
+        $summary->getSummary();
+    }
+}
+// execute it
+$cli = new Minimal();
+$cli->setupEnvironments(Config::$targetUrl, Config::getScheme());
+$cli->run();

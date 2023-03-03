@@ -18,7 +18,8 @@
     "doctrine/annotations": "2.0.*",
     "ext-curl": "*",
     "php-amqplib/php-amqplib": "2.11.*",
-    "react/child-process": "0.6.*"
+    "react/child-process": "0.6.*",
+    "splitbrain/php-cli": "^1.2"
   },
   "autoload": {
     "psr-0": {
